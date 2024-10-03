@@ -1,101 +1,214 @@
-import Image from "next/image";
+"use client"
+{/* <Input className="font-title bg-red-500 text-xl" type="text" placeholder="CPF:" {...field} /> */ }
 
-export default function Home() {
+import Link from 'next/link';
+
+
+import { useForm } from "react-hook-form"
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+
+import { Input } from "@/components/ui/input"
+import { CalendarIcon } from "@radix-ui/react-icons"
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+export default function InputForm() {
+  const form = useForm();
+
+  async function onSubmit(formData: unknown) {
+    console.log(formData);
+    await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/users/", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+  }
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <section className="flex items-center justify-center h-screen bg-gradient-to-l from-red-500 to-black">
+      <Form {...form}>
+        <form className="bg-white w-3/5 max-w-lg border-solid border-2 p-8 rounded shadow-md w-1/4" onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name="first-name"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-black font-title text-2xl">Nome:</FormLabel>
+                <FormControl>
+                  <Input className="bg-white text-red-500 font-title text-xl" type="text" placeholder="Informe seu primeiro nome:" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+          <FormField
+            control={form.control}
+            name="last-name"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-black font-title text-2xl">Sobrenome:</FormLabel>
+                <FormControl>
+                  <Input className="bg-white text-red-500 font-title text-xl" type="text" placeholder="Informe seu último nome:" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <FormField
+            control={form.control}
+            name="cpf"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-black font-title text-2xl">CPF:</FormLabel>
+                <FormControl>
+                  <Input className="bg-white text-red-500 font-title text-xl" type="number" placeholder="Informe seu CPF (apenas números):" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+
+          <FormField
+            control={form.control}
+            name="date_of_birth"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="bg-white text-black font-title text-xl">DATA DE ANIVERSÁRIO:</FormLabel>
+                <FormDescription>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(new Date(field.value), 'dd/MM/yy') // Alteração aqui
+                          ) : (
+                            <span className="bg-white font-title text-xl">Informe sua data de aniversário:</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+
+          <FormField
+            control={form.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-black font-title text-2xl">Estado:</FormLabel>
+                <FormControl>
+                  <select className="text-black place-items-center font-title text-xl border border-gray-200 rounded" {...field}>
+                    <option className="bg-white text-red-500 font-title text-xl" value="#" disabled selected>Informe o seu estado:</option>
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espírito Santo</option>
+                    <option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+                  </select>
+
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-black font-title text-2xl">Cidade:</FormLabel>
+                <FormControl>
+                  <Input className="bg-white font-title text-red-500 text-xl" type="text" placeholder="Informe a cidade onde reside:" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-black font-title text-2xl">E-mail:</FormLabel>
+                <FormControl>
+                  <Input className="bg-white font-title text-red-500 text-xl" type="text" placeholder="Insira seu e-mail (@gmail.com): " {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-black font-title text-2xl">Senha:</FormLabel>
+                <FormControl>
+                  <Input className="bg-white font-title text-red-500 text-xl" type="text" placeholder="Insira sua senha:" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <div className="pt-4 flex flex-col">
+            <Link className='flex' href={"./login"}>
+              <Button className="font-title rounded-lg w-full text-3xl" type="submit">CADASTRAR-SE</Button>
+            </Link>
+          </div>
+        </form>
+      </Form>
+    </section>
+  )
 }
